@@ -1,0 +1,37 @@
+{
+  "name": "app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@chakra-ui/icons": "^1.0.13",
+    "@chakra-ui/react": "^1.6.2",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
+    "axios": "^0.21.1",
+    "cookie": "^0.4.1",
+    "cookie-cutter": "^0.2.0",
+    "cookies": "^0.8.0",
+    "framer-motion": "^4",
+    "js-cookie": "^2.2.1",
+    "moment": "^2.29.1",
+    "mongodb": "^3.6.9",
+    "next": "10.2.0",
+    "next-auth": "^3.27.1",
+    "pg": "^8.6.0",
+    "react": "17.0.2",
+    "react-cookie": "^4.0.3",
+    "react-dom": "17.0.2",
+    "react-icons": "^4.2.0",
+    "react-is": "^17.0.2",
+    "react-markdown": "^6.0.2",
+    "react-moment": "^1.1.1",
+    "react-number-format": "^4.6.3",
+    "react-slick": "^0.28.1",
+    "smooth-scrollbar": "^8.6.2"
+  }
+}
