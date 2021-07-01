@@ -65,8 +65,10 @@ export default function Account(props) {
 
   useEffect(() => {
     console.log(cookies);
-    getItems();
-  }, []);
+    if (cookies) {
+      getItems();
+    }
+  }, [cookies]);
 
   return (
     <AccountLayout>

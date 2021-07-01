@@ -28,7 +28,7 @@ export default function AccountLayout(props) {
     }, 1000);
   }, []);
 
-  if (typeof window !== "undefined" && loading) return null;
+  if (typeof window !== "undefined" && loading) return "Loading . . .";
 
   if (typeof window !== "undefined" && !cookies.session) {
     window.location.href = "/auth/signin";

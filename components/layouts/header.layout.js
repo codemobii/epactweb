@@ -120,7 +120,7 @@ export default function MainHeader() {
                 <MainButton link="/profile" title="Account" />
               ) : (
                 <MainButton
-                  link="/auth/signin"
+                  link="/profile"
                   // onClick={(e) => {
                   //   e.preventDefault();
                   //   signIn();

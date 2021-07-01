@@ -44,8 +44,10 @@ export default function AccountSettings() {
   };
 
   useEffect(() => {
-    getItem();
-  }, []);
+    if (cookies) {
+      getItem();
+    }
+  }, [cookies]);
 
   const USER_DATA = [
     { label: "Username", value: user.username, type: "text" },
