@@ -25,7 +25,7 @@ export default function AccountLayout(props) {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 1000);
+    }, 2000);
   }, []);
 
   if (typeof window !== "undefined" && !cookies.session) {

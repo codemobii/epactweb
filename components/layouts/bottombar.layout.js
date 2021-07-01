@@ -21,7 +21,7 @@ export default function BottombarLayout() {
       left="0"
       d={{ base: "block", md: "none" }}
     >
-      <SimpleGrid columns={NAV_LINKS.length} spacing="10px" w="100%" py="10px">
+      <SimpleGrid columns={3} spacing="10px" w="100%" py="10px">
         {NAV_LINKS.map((e, i) => (
           <Stack
             as="a"
