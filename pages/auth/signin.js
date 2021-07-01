@@ -35,7 +35,7 @@ export default function Signin({ req, res }) {
           try {
             setCookie("session", JSON.stringify(response.data), { path: "/" });
             setTimeout(() => {
-              window.location.href = "/account";
+              window.location.href = "/profile";
             }, 1000);
           } catch (error) {
             console.log(error);
