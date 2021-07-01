@@ -28,8 +28,6 @@ export default function AccountLayout(props) {
     }, 1000);
   }, []);
 
-  if (typeof window !== "undefined" && loading) return "Loading . . .";
-
   if (typeof window !== "undefined" && !cookies.session) {
     window.location.href = "/auth/signin";
   }
@@ -51,7 +49,7 @@ export default function AccountLayout(props) {
 
       <Box position="relative" pl={{ base: "0", md: "260px" }} pt="100px">
         <BoxContainer>
-          <Stack spacing="20px">{children}</Stack>
+          {loading ? "Loading . . ." : <Stack spacing="20px">{children}</Stack>}
         </BoxContainer>
       </Box>
 
