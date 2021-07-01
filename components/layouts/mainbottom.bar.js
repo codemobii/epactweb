@@ -2,6 +2,7 @@ import { IconButton } from "@chakra-ui/button";
 import { Box, SimpleGrid } from "@chakra-ui/layout";
 import { Stack, Text } from "@chakra-ui/react";
 import React from "react";
+import { useCookies } from "react-cookie";
 import {
   BsAppIndicator,
   BsArrowClockwise,
@@ -10,6 +11,31 @@ import {
 } from "react-icons/bs";
 
 export default function MainBottombarLayout() {
+  const [cookies, setCookie] = useCookies(["session"]);
+
+  const NAV_LINKS = [
+    {
+      label: "Home",
+      href: "/",
+      icon: <BsGrid size="20px" />,
+    },
+    {
+      label: "My Farm",
+      href: cookies.session ? "/profile" : "/auth/signin",
+      icon: <BsBarChart size="20px" />,
+    },
+    {
+      label: "News",
+      href: "/news",
+      icon: <BsArrowClockwise size="20px" />,
+    },
+    {
+      label: "Feedback",
+      href: "/contact",
+      icon: <BsAppIndicator size="18px" />,
+    },
+  ];
+
   return (
     <Box
       bg="white"
@@ -38,26 +64,3 @@ export default function MainBottombarLayout() {
     </Box>
   );
 }
-
-const NAV_LINKS = [
-  {
-    label: "Home",
-    href: "/",
-    icon: <BsGrid size="20px" />,
-  },
-  {
-    label: "My Farm",
-    href: "/account",
-    icon: <BsBarChart size="20px" />,
-  },
-  {
-    label: "News",
-    href: "/news",
-    icon: <BsArrowClockwise size="20px" />,
-  },
-  {
-    label: "Feedback",
-    href: "/contact",
-    icon: <BsAppIndicator size="18px" />,
-  },
-];

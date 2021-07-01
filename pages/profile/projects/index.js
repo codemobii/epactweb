@@ -53,8 +53,10 @@ export default function Account(props) {
 
   useEffect(() => {
     console.log(ses);
-    getItems();
-  }, []);
+    if (cookies) {
+      getItems();
+    }
+  }, [cookies]);
 
   return (
     <AccountLayout title="My Projects">
