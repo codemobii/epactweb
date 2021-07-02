@@ -80,7 +80,7 @@ export default function MainHeader() {
       <Box bg="white">
         <BoxContainer>
           <Flex
-            h={"80px"}
+            h={"90px"}
             alignItems={"center"}
             justifyContent={{ base: "center", md: "space-between" }}
           >
