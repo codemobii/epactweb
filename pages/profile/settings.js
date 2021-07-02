@@ -7,28 +7,28 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/layout";
+import { Avatar, Center, Spinner, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import {
   BsAwardFill,
   BsInfoCircleFill,
+  BsPlus,
   BsQuestionCircleFill,
   BsShieldFill,
 } from "react-icons/bs";
-import AccountInvestmentsAddon from "../../addons/acount_investments.addon";
-import AdAddon from "../../addons/ad.addon";
-import BalanceAddon from "../../addons/balance.addon";
-import TableAddon from "../../addons/table.addon";
 import UserinfoAddon from "../../addons/userinfo.addon";
-import OutlineButton from "../../components/buttons/outline.button";
 import AccountLayout from "../../components/layouts/account.layout";
-import CardLayout from "../../components/layouts/card.layout";
-import ListLayout from "../../components/layouts/list.layout";
+import { getStrapiMedia } from "../../utils/media.util";
 
 export default function AccountSettings() {
   const [user, setUser] = useState({});
+  const [uploading, setUploading] = useState(false);
+  const [showInput, setShowInput] = useState(false);
   const [cookies, setCookie] = useCookies(["session"]);
+
+  const toast = useToast();
 
   const getItem = async () => {
     await axios
@@ -43,6 +43,61 @@ export default function AccountSettings() {
       .catch((er) => console.log(er));
   };
 
+  const upload = (e) => {
+    const file = e.target.files[0];
+    let formData = new FormData();
+    formData.append("files", file);
+    setUploading(true);
+    axios({
+      method: "post",
+      url: "http://localhost:1337/upload",
+      data: formData,
+      headers: {
+        Authorization: `Bearer ${cookies.session && cookies.session.jwt}`,
+      },
+    })
+      .then(({ data }) => {
+        axios
+          .put(
+            `${process.env.NEXT_PUBLIC_API_URL}/users/${
+              cookies.session && cookies.session.user && cookies.session.user.id
+            }`,
+            {
+              profileImage: data,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${
+                  cookies.session && cookies.session.jwt
+                }`,
+              },
+            }
+          )
+          .then(() => {
+            getItem();
+            toast({
+              title: "Success",
+              description: "Update successful!",
+              status: "success",
+              duration: 9000,
+              isClosable: true,
+            });
+          });
+      })
+      .catch((error) => {
+        console.log("Error: ", error.message);
+
+        toast({
+          title: "Error",
+          description: "Something went wrong, try again!",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      })
+      .finally(() => setUploading(false));
+  };
+
   useEffect(() => {
     if (cookies) {
       getItem();
@@ -50,19 +105,66 @@ export default function AccountSettings() {
   }, [cookies]);
 
   const USER_DATA = [
-    { label: "Username", value: user.username, type: "text" },
-    { label: "Email address", value: user.email, type: "email" },
+    { label: "Username", value: user.username, type: "text", update: false },
+    { label: "Email address", value: user.email, type: "email", update: false },
     {
       label: "Phone number",
       value: user.phone || "080**********",
       type: "phone",
+      update: true,
     },
-    { label: "Password", value: "***********", type: "password" },
+    // { label: "Password", value: "***********", type: "password", update: true },
   ];
 
   return (
     <AccountLayout title="Account details">
       <Stack spacing="30px">
+        <Center>
+          <Avatar
+            name={user.username}
+            src={user.profileImage && getStrapiMedia(user.profileImage)}
+            pos="relative"
+            size="2xl"
+            cursor="pointer"
+            onMouseOver={() => setShowInput(true)}
+            onMouseOut={() => setShowInput(false)}
+          >
+            <Center
+              pos="absolute"
+              w="100%"
+              h="100%"
+              bg="rgba(0,0,0,0.8)"
+              rounded="full"
+              cursor="pointer"
+              overflow="hidden"
+              opacity={showInput ? "1" : uploading ? "1" : "0"}
+              transition="all 0.3s ease"
+            >
+              {uploading ? (
+                <Spinner color="white" />
+              ) : (
+                <BsPlus
+                  size="38px"
+                  color="white"
+                  style={{ position: "absolute" }}
+                />
+              )}
+              <input
+                id="imageFile"
+                type="file"
+                onChange={upload}
+                style={{
+                  position: "absolute",
+                  width: "100%",
+                  height: "300px",
+                  opacity: 1,
+                  cursor: "pointer",
+                  bottom: 0,
+                }}
+              />
+            </Center>
+          </Avatar>
+        </Center>
         <Stack spacing="10px">
           {USER_DATA.map((data, key) => (
             <UserinfoAddon
@@ -71,6 +173,14 @@ export default function AccountSettings() {
               value={data.value}
               key={key}
               type={data.type}
+              update={data.update}
+              id={
+                cookies.session &&
+                cookies.session.user &&
+                cookies.session.user.id
+              }
+              jwt={cookies.session && cookies.session.jwt}
+              onEnd={getItem}
             />
           ))}
         </Stack>

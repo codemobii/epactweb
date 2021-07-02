@@ -10,7 +10,6 @@ import ListLayout from "../../components/layouts/list.layout";
 import ContentLoaderLayout from "../../components/layouts/contentloader.layout";
 import { fetchAPI } from "../../utils/api.util";
 import { useEffect } from "react";
-import Cookies from "js-cookie";
 import { useCookies } from "react-cookie";
 
 export default function Account(props) {

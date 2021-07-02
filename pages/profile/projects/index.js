@@ -1,7 +1,6 @@
 import { Box } from "@chakra-ui/layout";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { getSession } from "next-auth/client";
 import AdAddon from "../../../addons/ad.addon";
 import BalanceAddon from "../../../addons/balance.addon";
 import TableAddon from "../../../addons/table.addon";

@@ -17,8 +17,8 @@ import {
   useBreakpointValue,
   Image,
 } from "@chakra-ui/react";
-import { signOut } from "next-auth/client";
-import React, { useContext } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { GlobalContext } from "../../pages/_app";
 import { getStrapiMedia } from "../../utils/media.util";
@@ -33,6 +33,24 @@ export default function TopbarLayout({
 }) {
   const global = useContext(GlobalContext);
   const [cookies, setCookie, removeCookie] = useCookies(["session"]);
+  const [user, setUser] = useState({});
+
+  const getItem = async () => {
+    await axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+        headers: {
+          Authorization: `Bearer ${cookies.session && cookies.session.jwt}`,
+        },
+      })
+      .then((res) => {
+        setUser(res.data);
+      })
+      .catch((er) => console.log(er));
+  };
+
+  useEffect(() => {
+    getItem();
+  }, []);
 
   return (
     <Box
@@ -52,7 +70,7 @@ export default function TopbarLayout({
             base: (
               <Image
                 cursor="pointer"
-                src={getStrapiMedia(global.logo)}
+                src={getStrapiMedia(global.logoTwo)}
                 w="130px"
               />
             ),
@@ -65,8 +83,12 @@ export default function TopbarLayout({
               <HStack cursor="pointer">
                 <Avatar
                   size="sm"
-                  src={session.user && session.user.image && session.user.image}
-                  name={session.user && session.user.username}
+                  src={
+                    session.user &&
+                    user.profileImage &&
+                    getStrapiMedia(user.profileImage)
+                  }
+                  name={session.user && user.username}
                 />
                 <Text fontWeight="bold" d={{ base: "none", md: "block" }}>
                   {/* {!loading && session.user && session.user.name} */}
@@ -79,13 +101,15 @@ export default function TopbarLayout({
                   <Avatar
                     size="lg"
                     src={
-                      session.user && session.user.image && session.user.image
+                      session.user &&
+                      user.profileImage &&
+                      getStrapiMedia(user.profileImage)
                     }
-                    name={session.user && session.user.username}
+                    name={session.user && user.username}
                   />
                   <Stack spacing="0.5" textAlign="center" align="center">
                     <Text fontWeight="bold">
-                      {session.user && session.user.username}
+                      {session.user && user.username}
                     </Text>
                     <Text color="gray.400" fontWeight="light">
                       {session.user && session.user.email}
@@ -96,8 +120,13 @@ export default function TopbarLayout({
                     <Button fontSize="sm">Account</Button>
                     <Button
                       onClick={(e) => {
-                        if (removeCookie("session")) {
-                          window.location.href = "/auth/signin";
+                        try {
+                          removeCookie("session");
+                          setTimeout(() => {
+                            window.localStorage.removeItem("session");
+                          }, 1000);
+                        } catch (error) {
+                          console.log(error);
                         }
                       }}
                       fontSize="sm"

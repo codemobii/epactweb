@@ -79,7 +79,10 @@ export default function FooterLayout() {
       marginBottom={{ base: "75px", md: 0 }}
     >
       <Container as={Stack} maxW={"container.lg"} py={10}>
-        <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={8}>
+        <SimpleGrid
+          templateColumns={{ sm: "1fr 1fr", md: "2fr 1fr 1fr 1fr" }}
+          spacing={8}
+        >
           <Stack align={"flex-start"}>
             <ListHeader>
               <Image

@@ -10,7 +10,6 @@ import {
 import axios from "axios";
 import React, { useContext, useEffect } from "react";
 import { useState } from "react";
-import { getSession, useSession } from "next-auth/client";
 import { BsInfoCircleFill } from "react-icons/bs";
 import MainButton from "../../../components/buttons/main.button";
 import MainInput from "../../../components/inputs/main.input";
@@ -118,12 +117,11 @@ export default function Account(props) {
                         cookies.session && cookies.session.jwt
                       }`,
                     },
-                  }
+                  }.then((res) => {
+                    alert("Investment processed!");
+                    window.location.href = "/profile/projects";
+                  })
                 );
-              })
-              .then((res) => {
-                alert("Investment processed!");
-                window.location.href = "/profile/projects";
               })
               .catch((er) => console.log(er));
           },

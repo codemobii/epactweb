@@ -37,7 +37,7 @@ export default function AboutAddon({
             <Text>{description}</Text>
             {isHome && (
               <Center>
-                <MainButton title="Read More" />
+                <MainButton link="/about" title="Read More" />
               </Center>
             )}
           </Stack>

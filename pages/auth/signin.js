@@ -1,7 +1,6 @@
 import { Checkbox } from "@chakra-ui/checkbox";
 import { Link, Stack, Text } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/react";
-import Cookies from "js-cookie";
 import axios from "axios";
 import React, { useState } from "react";
 import { useCookies } from "react-cookie";
@@ -93,7 +92,7 @@ export default function Signin({ req, res }) {
             <Text>
               Don't have account?{" "}
               <Link color={"green.400"} href="/auth/signup">
-                Sign Up
+                Start Farming
               </Link>
             </Text>
           </Stack>

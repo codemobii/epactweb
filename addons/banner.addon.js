@@ -101,7 +101,7 @@ export default function BannerAddon({ title, video, link }) {
                   </Heading>
 
                   <Box as="span">
-                    <MainButton title="Get start" link={link} />
+                    <MainButton title="Start Farming" link={link} />
                   </Box>
                 </Stack>
               </Center>

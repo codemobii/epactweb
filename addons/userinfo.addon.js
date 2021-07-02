@@ -12,7 +12,9 @@ import {
   Stack,
   Text,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
+import axios from "axios";
 import React from "react";
 import { useState } from "react";
 import { BsChevronRight } from "react-icons/bs";
@@ -26,8 +28,50 @@ export default function UserinfoAddon({
   icon = null,
   isEdit = false,
   type = "",
+  id = "",
+  jwt = "",
+  update = false,
+
+  onEnd = () => {
+    //
+  },
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [text, setText] = useState(value);
+  const [loading, setLoading] = useState(false);
+
+  const toast = useToast();
+
+  const handleEdit = async () => {
+    setLoading(true);
+    await axios
+      .put(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`,
+        {
+          phone: type === "phone" ? text : value,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      )
+      .then((res) => {
+        toast({
+          title: "Success",
+          description: "Update successful!",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+        onEnd();
+      })
+      .catch((er) => {
+        console.log(er);
+      })
+      .finally(() => setLoading(false));
+  };
 
   return (
     <>
@@ -72,12 +116,33 @@ export default function UserinfoAddon({
                     label="Confirm password"
                   />
                 </Stack>
+              ) : type === "phone" ? (
+                <Stack>
+                  <MainInput
+                    type={type}
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    label={label}
+                    read={update}
+                  />
+                </Stack>
               ) : (
                 <Stack>
-                  <MainInput type={type} value={value} label={label} />
+                  <MainInput
+                    type={type}
+                    value={value}
+                    label={label}
+                    read={update}
+                  />
                 </Stack>
               )}
-              <MainButton title="Update" />
+              {update && (
+                <MainButton
+                  loading={loading}
+                  onClick={handleEdit}
+                  title="Update"
+                />
+              )}
             </Stack>
           </ModalBody>
           <ModalFooter />

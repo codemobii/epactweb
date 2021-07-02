@@ -1,6 +1,4 @@
 import { Box, Stack } from "@chakra-ui/layout";
-import Cookies from "js-cookie";
-import { useSession, signIn } from "next-auth/client";
 import Head from "next/head";
 import React, { useState } from "react";
 import { useEffect } from "react";

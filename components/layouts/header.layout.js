@@ -16,7 +16,6 @@ import {
   useColorModeValue,
   Stack,
 } from "@chakra-ui/react";
-import { signIn, useSession } from "next-auth/client";
 import BoxContainer from "./container.layout";
 import MainButton from "../buttons/main.button";
 import { useRouter } from "next/router";
@@ -69,7 +68,6 @@ const NavLink = ({ children, href }) => (
 
 export default function MainHeader() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [session, loading] = useSession();
 
   const router = useRouter();
   const path = router.pathname;
@@ -77,14 +75,12 @@ export default function MainHeader() {
   const global = useContext(GlobalContext);
   const [cookies, setCookie] = useCookies(["session"]);
 
-  console.log(cookies);
-
   return (
     <>
       <Box bg="white">
         <BoxContainer>
           <Flex
-            h={16}
+            h={"80px"}
             alignItems={"center"}
             justifyContent={{ base: "center", md: "space-between" }}
           >
@@ -109,25 +105,14 @@ export default function MainHeader() {
                 display={{ base: "none", md: "flex" }}
               >
                 {Links.map((link) => (
-                  <NavLink key={link} href={link.href}>
+                  <NavLink key={link.label} href={link.href}>
                     {link.label}
                   </NavLink>
                 ))}
               </HStack>
             </HStack>
             <Box d={{ base: "none", md: "flex" }}>
-              {cookies.session ? (
-                <MainButton link="/profile" title="Account" />
-              ) : (
-                <MainButton
-                  link="/profile"
-                  // onClick={(e) => {
-                  //   e.preventDefault();
-                  //   signIn();
-                  // }}
-                  title="Sign In"
-                />
-              )}
+              <MainButton link="/profile" title="Start Farming" />
             </Box>
           </Flex>
         </BoxContainer>
@@ -136,7 +121,7 @@ export default function MainHeader() {
           <Box pb={4} display={{ md: "none" }}>
             <Stack as={"nav"} spacing={4}>
               {Links.map((link) => (
-                <NavLink key={link} href={link.href}>
+                <NavLink key={link.label} href={link.href}>
                   {link.label}
                 </NavLink>
               ))}
