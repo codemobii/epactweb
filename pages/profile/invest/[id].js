@@ -7,6 +7,16 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/layout";
+import {
+  FormControl,
+  FormLabel,
+  FormHelperText,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+} from "@chakra-ui/react";
 import axios from "axios";
 import React, { useContext, useEffect } from "react";
 import { useState } from "react";
@@ -19,6 +29,7 @@ import { fetchAPI } from "../../../utils/api.util";
 import { getStrapiMedia } from "../../../utils/media.util";
 import { GlobalContext } from "../../_app";
 import { useCookies } from "react-cookie";
+import NumberFormat from "react-number-format";
 
 export default function Account(props) {
   const { project } = props;
@@ -32,6 +43,10 @@ export default function Account(props) {
   const [amount, setAmount] = useState(project.minimum);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [coupon, setCoupon] = useState("");
+
+  const format = (val) => `₦` + val;
+  const parse = (val) => val.replace(/^\₦/, "");
 
   function makeRef(length) {
     var result = "";
@@ -167,17 +182,62 @@ export default function Account(props) {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </HStack>
-            <MainInput
+
+            <FormControl>
+              <FormLabel>Amount to invest</FormLabel>
+              <NumberInput
+                step={project.minimum}
+                min={project.minimum}
+                max={project.maximum}
+                onChange={(valueString) => setAmount(parse(valueString))}
+                value={format(amount)}
+              >
+                <NumberInputField readOnly />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+              <FormHelperText>
+                You can only invest from{" "}
+                <NumberFormat
+                  value={project.minimum}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  prefix={"₦"}
+                />{" "}
+                to{" "}
+                <NumberFormat
+                  value={project.maximum}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  prefix={"₦"}
+                />
+                , use the stepper buttons to increase/decrease amount.
+              </FormHelperText>
+            </FormControl>
+            {/* <MainInput
               type="number"
               isRequired
               label="Amount to invest"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-            />
+            /> */}
 
-            <Box>
+            <SimpleGrid
+              columns={{ base: 1, md: 2 }}
+              alignItems="flex-end"
+              maxW="500px"
+              spacing="20px"
+            >
+              <MainInput
+                type="number"
+                label="Have a coupon code?"
+                value={coupon}
+                onChange={(e) => setCoupon(e.target.value)}
+              />
               <MainButton title="Invest" onClick={MakePayment} />
-            </Box>
+            </SimpleGrid>
           </Stack>
         </CardLayout>
       </Stack>

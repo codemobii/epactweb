@@ -13,7 +13,7 @@ export default function BottombarLayout() {
   return (
     <Box
       bg="white"
-      borderTop="1"
+      borderTop="1px"
       borderColor="gray.200"
       w="100%"
       pos="fixed"

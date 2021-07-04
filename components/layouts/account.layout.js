@@ -45,7 +45,12 @@ export default function AccountLayout(props) {
 
       <SidebarLayout isOpen={isOpen} />
 
-      <Box position="relative" pl={{ base: "0", md: "260px" }} pt="100px">
+      <Box
+        position="relative"
+        pl={{ base: "0", md: "260px" }}
+        pt="100px"
+        pb="120px"
+      >
         <BoxContainer>
           {loading ? "Loading . . ." : <Stack spacing="20px">{children}</Stack>}
         </BoxContainer>
