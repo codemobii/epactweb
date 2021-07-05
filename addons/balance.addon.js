@@ -37,7 +37,7 @@ export default function BalanceAddon({ data = {} }) {
   return (
     <SimpleGrid columns={{ base: 1, md: 4 }} spacing="10px">
       {DATA.map((data, key) => (
-        <CardLayout>
+        <CardLayout key={key}>
           {data.isHidden && (
             <Tag
               pos="absolute"

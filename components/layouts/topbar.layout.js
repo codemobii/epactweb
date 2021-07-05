@@ -16,6 +16,7 @@ import {
   Button,
   useBreakpointValue,
   Image,
+  Link,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
@@ -117,14 +118,16 @@ export default function TopbarLayout({
                   </Stack>
 
                   <HStack>
-                    <Button fontSize="sm">Account</Button>
+                    <Link href="/myfarm/settings">
+                      <Button fontSize="sm">Account</Button>
+                    </Link>
                     <Button
                       onClick={(e) => {
                         try {
-                          removeCookie("session");
+                          window.localStorage.removeItem("session");
                           setTimeout(() => {
-                            window.localStorage.removeItem("session");
-                          }, 1000);
+                            window.location.href = "/auth/signin";
+                          }, 2000);
                         } catch (error) {
                           console.log(error);
                         }

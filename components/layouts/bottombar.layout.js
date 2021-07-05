@@ -42,12 +42,12 @@ export default function BottombarLayout() {
 const NAV_LINKS = [
   {
     label: "Dashboard",
-    href: "/profile",
+    href: "/myfarm",
     icon: <BsGrid size="20px" />,
   },
   {
     label: "Projects",
-    href: "/profile/projects",
+    href: "/myfarm/projects",
     icon: <BsBarChart size="20px" />,
   },
   // {
@@ -57,7 +57,7 @@ const NAV_LINKS = [
   // },
   {
     label: "Account",
-    href: "/profile/settings",
+    href: "/myfarm/settings",
     icon: <BsPerson size="18px" />,
   },
 ];

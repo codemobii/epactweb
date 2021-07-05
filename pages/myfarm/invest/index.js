@@ -25,12 +25,24 @@ export default function Account(props) {
   );
 }
 
-export async function getStaticProps(req, res) {
+export async function getServerSideProps({ req }) {
   // Run API calls in parallel
   const [projects] = await Promise.all([fetchAPI("/projects")]);
 
+  const { cookies: session } = req;
+
+  if (req && session) {
+    if (!session.session) {
+      return {
+        redirect: {
+          destination: "/auth/signin",
+          permanent: false,
+        },
+      };
+    }
+  }
+
   return {
     props: { projects },
-    revalidate: 1,
   };
 }

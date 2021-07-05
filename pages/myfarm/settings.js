@@ -22,11 +22,12 @@ import UserinfoAddon from "../../addons/userinfo.addon";
 import AccountLayout from "../../components/layouts/account.layout";
 import { getStrapiMedia } from "../../utils/media.util";
 
-export default function AccountSettings() {
+export default function AccountSettings(props) {
   const [user, setUser] = useState({});
   const [uploading, setUploading] = useState(false);
   const [showInput, setShowInput] = useState(false);
-  const [cookies, setCookie] = useCookies(["session"]);
+
+  const cookies = JSON.parse(props.session);
 
   const toast = useToast();
 
@@ -34,7 +35,7 @@ export default function AccountSettings() {
     await axios
       .get(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
         headers: {
-          Authorization: `Bearer ${cookies.session && cookies.session.jwt}`,
+          Authorization: `Bearer ${cookies && cookies.jwt}`,
         },
       })
       .then((res) => {
@@ -50,26 +51,24 @@ export default function AccountSettings() {
     setUploading(true);
     axios({
       method: "post",
-      url: "http://localhost:1337/upload",
+      url: `${process.env.NEXT_PUBLIC_API_URL}/upload`,
       data: formData,
       headers: {
-        Authorization: `Bearer ${cookies.session && cookies.session.jwt}`,
+        Authorization: `Bearer ${cookies && cookies.jwt}`,
       },
     })
       .then(({ data }) => {
         axios
           .put(
             `${process.env.NEXT_PUBLIC_API_URL}/users/${
-              cookies.session && cookies.session.user && cookies.session.user.id
+              cookies && cookies.user && cookies.user.id
             }`,
             {
               profileImage: data,
             },
             {
               headers: {
-                Authorization: `Bearer ${
-                  cookies.session && cookies.session.jwt
-                }`,
+                Authorization: `Bearer ${cookies && cookies.jwt}`,
               },
             }
           )
@@ -201,3 +200,22 @@ const O_DATA = [
   { value: "Privacy and Policy", icon: <BsShieldFill /> },
   { value: "About us", icon: <BsInfoCircleFill /> },
 ];
+
+export async function getServerSideProps({ req, res }) {
+  const { cookies: session } = req;
+
+  if (req && session) {
+    if (!session.session) {
+      return {
+        redirect: {
+          destination: "/auth/signin",
+          permanent: false,
+        },
+      };
+    }
+  }
+
+  return {
+    props: { session: session.session },
+  };
+}

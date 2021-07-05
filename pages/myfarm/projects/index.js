@@ -13,15 +13,12 @@ import { fetchAPI } from "../../../utils/api.util";
 import { useCookies } from "react-cookie";
 
 export default function Account(props) {
-  const { ad } = props;
+  const { ad, session } = props;
 
-  const [wallet, setWallet] = useState({});
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [cookies, setCookie] = useCookies(["session"]);
-
-  const ses = cookies.session;
+  const ses = JSON.parse(session);
 
   const transactionReq = axios.get(
     `${process.env.NEXT_PUBLIC_API_URL}/transactions?users_permissions_user=${
@@ -51,11 +48,8 @@ export default function Account(props) {
   };
 
   useEffect(() => {
-    console.log(ses);
-    if (cookies) {
-      getItems();
-    }
-  }, [cookies]);
+    getItems();
+  }, []);
 
   return (
     <AccountLayout title="My Projects">
@@ -82,7 +76,20 @@ export async function getServerSideProps({ req }) {
   // Run API calls in parallel
   const [ad] = await Promise.all([fetchAPI("/account-ad")]);
 
+  const { cookies: session } = req;
+
+  if (req && session) {
+    if (!session.session) {
+      return {
+        redirect: {
+          destination: "/auth/signin",
+          permanent: false,
+        },
+      };
+    }
+  }
+
   return {
-    props: { ad },
+    props: { ad, session: session.session },
   };
 }

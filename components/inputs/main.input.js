@@ -21,7 +21,6 @@ export default function MainInput({
         value={value}
         border="2px"
         type={type}
-        defaultValue={value}
       />
       {/* <FormHelperText>We'll never share your email.</FormHelperText> */}
     </FormControl>

@@ -11,12 +11,12 @@ import ContentLoaderLayout from "../../components/layouts/contentloader.layout";
 import { fetchAPI } from "../../utils/api.util";
 import { useEffect } from "react";
 import { useCookies } from "react-cookie";
+import jsHttpCookie from "cookie";
 
 export default function Account(props) {
-  const { ad } = props;
+  const { ad, session } = props;
 
-  const [ses, setSes] = useState({});
-  const [cookies, setCookie] = useCookies(["session"]);
+  const cookies = JSON.parse(session);
 
   const [wallet, setWallet] = useState({});
   const [transactions, setTransactions] = useState([]);
@@ -24,22 +24,22 @@ export default function Account(props) {
 
   const walletReq = axios.get(
     `${process.env.NEXT_PUBLIC_API_URL}/wallets/${
-      cookies.session && cookies.session.user && cookies.session.user.wallet.id
+      cookies && cookies.user && cookies.user.wallet.id
     }`,
     {
       headers: {
-        Authorization: `Bearer ${cookies.session && cookies.session.jwt}`,
+        Authorization: `Bearer ${cookies && cookies.jwt}`,
       },
     }
   );
 
   const transactionReq = axios.get(
     `${process.env.NEXT_PUBLIC_API_URL}/transactions?users_permissions_user=${
-      cookies.session && cookies.session.user && cookies.session.user.id
+      cookies && cookies.user && cookies.user.id
     }`,
     {
       headers: {
-        Authorization: `Bearer ${cookies.session && cookies.session.jwt}`,
+        Authorization: `Bearer ${cookies && cookies.jwt}`,
       },
     }
   );
@@ -63,11 +63,8 @@ export default function Account(props) {
   };
 
   useEffect(() => {
-    console.log(cookies);
-    if (cookies) {
-      getItems();
-    }
-  }, [cookies]);
+    getItems();
+  }, []);
 
   return (
     <AccountLayout>
@@ -95,7 +92,20 @@ export async function getServerSideProps({ req, res }) {
   // Run API calls in parallel
   const [ad] = await Promise.all([fetchAPI("/account-ad")]);
 
+  const { cookies: session } = req;
+
+  if (req && session) {
+    if (!session.session) {
+      return {
+        redirect: {
+          destination: "/auth/signin",
+          permanent: false,
+        },
+      };
+    }
+  }
+
   return {
-    props: { ad },
+    props: { ad, session: session.session },
   };
 }

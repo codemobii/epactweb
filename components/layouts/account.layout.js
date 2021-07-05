@@ -12,7 +12,6 @@ export default function AccountLayout(props) {
   const { children, title = "Dashboard" } = props;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   const [cookies, setCookie] = useCookies(["session"]);
 
@@ -20,15 +19,9 @@ export default function AccountLayout(props) {
     setIsOpen(!isOpen);
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-  }, []);
-
-  if (typeof window !== "undefined" && !cookies.session) {
-    window.location.href = "/auth/signin";
-  }
+  // if (typeof window !== "undefined" && !cookies.session) {
+  //   window.location.href = "/auth/signin";
+  // }
 
   return (
     <Box w="100%" pos="relative" minH="100vh" bg="gray.50">
@@ -52,7 +45,7 @@ export default function AccountLayout(props) {
         pb="120px"
       >
         <BoxContainer>
-          {loading ? "Loading . . ." : <Stack spacing="20px">{children}</Stack>}
+          <Stack spacing="20px">{children}</Stack>
         </BoxContainer>
       </Box>
 

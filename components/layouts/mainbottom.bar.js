@@ -21,7 +21,7 @@ export default function MainBottombarLayout() {
     },
     {
       label: "My Farm",
-      href: cookies.session ? "/profile" : "/auth/signin",
+      href: "/myfarm",
       icon: <BsBarChart size="20px" />,
     },
     {
