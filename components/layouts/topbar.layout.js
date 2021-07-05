@@ -124,7 +124,7 @@ export default function TopbarLayout({
                     <Button
                       onClick={(e) => {
                         try {
-                          window.localStorage.removeItem("session");
+                          removeCookie("session");
                           setTimeout(() => {
                             window.location.href = "/auth/signin";
                           }, 2000);
