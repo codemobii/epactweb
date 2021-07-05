@@ -112,7 +112,7 @@ export default function MainHeader() {
               </HStack>
             </HStack>
             <Box d={{ base: "none", md: "flex" }}>
-              <MainButton link="/profile" title="Start Farming" />
+              <MainButton link="/myfarm" title="Start Farming" />
             </Box>
           </Flex>
         </BoxContainer>
