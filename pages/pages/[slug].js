@@ -15,7 +15,7 @@ export default function ProjectDesc(props) {
       <SingleAddon
         desc={
           <>
-            <ReactMarkdown children={article.description} escapeHtml={false} />
+            <ReactMarkdown children={article.description} />
           </>
         }
       />
