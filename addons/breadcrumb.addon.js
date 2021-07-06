@@ -1,6 +1,7 @@
 import { Box, Center, Heading, HStack, Stack, Text } from "@chakra-ui/layout";
-import React from "react";
+import React, { useContext } from "react";
 import { BsChevronRight } from "react-icons/bs";
+import { GlobalContext } from "../pages/_app";
 import { getStrapiMedia } from "../utils/media.util";
 
 export default function BreadcrumbAddon({
@@ -8,14 +9,14 @@ export default function BreadcrumbAddon({
   links = [],
   image = null,
 }) {
+  const global = useContext(GlobalContext);
+
   return (
     <Box
       w="100%"
       pos="relative"
       backgroundImage={
-        image
-          ? getStrapiMedia(image)
-          : "url(https://static.wixstatic.com/media/3db22c_11efeb57ed414fa2a8b6e88d5d23daf0~mv2.jpg/v1/fill/w_1583,h_400,al_c,q_85,usm_0.66_1.00_0.01/3db22c_11efeb57ed414fa2a8b6e88d5d23daf0~mv2.webp)"
+        image ? getStrapiMedia(image) : getStrapiMedia(global.breadcrumb_bg)
       }
       bgSize="cover"
       bgPos="center"
@@ -33,12 +34,12 @@ export default function BreadcrumbAddon({
           </Heading>
           <HStack>
             {links.map((e, i) => (
-              <>
+              <React.Fragment key={i}>
                 <Text key={i} fontSize="xs">
                   {e}
                 </Text>
                 {links[links.length - 1] !== e && <BsChevronRight key={i} />}
-              </>
+              </React.Fragment>
             ))}
           </HStack>
         </Stack>

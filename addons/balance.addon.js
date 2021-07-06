@@ -29,7 +29,6 @@ export default function BalanceAddon({ data = {} }) {
           prefix={"₦"}
         />
       ),
-      isHidden: true,
     },
     { label: "Hold Tokens", value: data.total_tokens ?? 0, isHidden: true },
   ];

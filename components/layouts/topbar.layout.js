@@ -66,7 +66,7 @@ export default function TopbarLayout({
       pl={{ base: "0", md: "260px" }}
     >
       <BoxContainer>
-        <Flex h={{ base: "55px", md: "70px" }} w="100%" align="center">
+        <Flex h={{ base: "70px", md: "70px" }} w="100%" align="center">
           {useBreakpointValue({
             base: (
               <Image

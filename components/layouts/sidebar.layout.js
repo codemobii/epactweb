@@ -65,12 +65,12 @@ export default function SidebarLayout({ isOpen = false }) {
 const NAV_LINKS = [
   {
     label: "Dashboard",
-    href: "/profile",
+    href: "/myfarm",
     icon: <BsGrid size="18px" />,
   },
   {
     label: "Projects",
-    href: "/profile/projects",
+    href: "/myfarm/projects",
     icon: <BsBarChart size="18px" />,
   },
   // {
@@ -80,7 +80,7 @@ const NAV_LINKS = [
   // },
   {
     label: "Account",
-    href: "/profile/settings",
+    href: "/myfarm/settings",
     icon: <BsPeopleCircle size="18px" />,
   },
 ];

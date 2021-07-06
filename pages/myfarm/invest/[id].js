@@ -17,6 +17,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   useToast,
+  Link,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useContext, useEffect } from "react";
@@ -353,12 +354,20 @@ export default function Account(props) {
             <SimpleGrid
               columns={{ base: 1, md: 2 }}
               alignItems="flex-end"
-              maxW="500px"
+              maxW="600px"
               spacing="20px"
             >
               <MainInput
                 type="number"
-                label="Have a credit code?"
+                label={
+                  <Text>
+                    Have a credit code? (or{" "}
+                    <Link color="green.500" href="/pages/vendors">
+                      Buy now
+                    </Link>
+                    )
+                  </Text>
+                }
                 value={coupon}
                 onChange={(e) => setCoupon(e.target.value)}
               />

@@ -105,6 +105,7 @@ export default function FooterLayout() {
 
           <Stack align={"flex-start"}>
             <ListHeader>Page</ListHeader>
+            <Link href={`/pages/vendors`}>Vendors</Link>
             {pages.map((e, i) => (
               <Link href={`/pages/${e.slug}`} key={i}>
                 {e.title}
