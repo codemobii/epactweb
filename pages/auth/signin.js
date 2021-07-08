@@ -5,6 +5,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useCookies } from "react-cookie";
 
+import Cookies from "js-cookie";
+
 import MainButton from "../../components/buttons/main.button";
 import MainInput from "../../components/inputs/main.input";
 import AuthLayout from "../../components/layouts/auth.layout";
@@ -15,7 +17,7 @@ export default function Signin({ req, res }) {
   const [password, setPassword] = useState("");
 
   const toast = useToast();
-  const [cookies, setCookie] = useCookies(["session"]);
+  // const [cookies, setCookie] = useCookies(["session"]);
 
   const fetchApi = async () => {
     setLoading(true);
@@ -31,14 +33,15 @@ export default function Signin({ req, res }) {
         date.setDate(date.getDate() + 1);
 
         if (typeof window != "undefined") {
-          try {
-            setCookie("session", JSON.stringify(response.data), { path: "/" });
+          if (
+            Cookies.set("session", JSON.stringify(response.data), { path: "/" })
+          ) {
             console.log("setted");
             setTimeout(() => {
               window.location.href = "/myfarm";
             }, 2000);
-          } catch (error) {
-            console.log(error);
+          } else {
+            console.log("Something went wrong");
           }
         }
       })
