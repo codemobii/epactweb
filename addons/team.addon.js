@@ -54,7 +54,12 @@ export default function TeamAddon({ data = [] }) {
             {data.map((e, i) => (
               <div>
                 <Center>
-                  <Stack spacing="20px" key={i} textAlign="center">
+                  <Stack
+                    spacing="20px"
+                    key={i}
+                    textAlign="center"
+                    align="center"
+                  >
                     <Avatar
                       boxShadow="base"
                       size="2xl"
