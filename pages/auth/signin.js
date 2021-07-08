@@ -33,9 +33,10 @@ export default function Signin({ req, res }) {
         if (typeof window != "undefined") {
           try {
             setCookie("session", JSON.stringify(response.data), { path: "/" });
+            console.log("setted");
             setTimeout(() => {
               window.location.href = "/myfarm";
-            }, 1000);
+            }, 2000);
           } catch (error) {
             console.log(error);
           }

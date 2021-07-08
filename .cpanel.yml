@@ -1,5 +1,0 @@
----
-deployment:
-  tasks:
-    - export DEPLOYPATH=/home/epacvsky/repositories/
-    - /bin/cp -R epactweb $DEPLOYPATH
