@@ -52,7 +52,7 @@ export default function Account() {
         </CardLayout>
 
         <CardLayout>
-          <ListLayout title="Activities">
+          <ListLayout title="My Referrals">
             <TableAddon />
           </ListLayout>
         </CardLayout>
