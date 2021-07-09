@@ -194,7 +194,7 @@ export default function Account(props) {
             })
             .catch((er) => {
               console.log(er);
-              if (er.response && er.response.status === 404) {
+              if (er.response && er.response.status === 500) {
                 toast({
                   title: "Error",
                   description: "Credit code not found!",
