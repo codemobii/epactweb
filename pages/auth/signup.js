@@ -1,7 +1,9 @@
 import { Link, Stack, Text } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/react";
 import axios from "axios";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { useEffect } from "react";
 import MainButton from "../../components/buttons/main.button";
 import MainInput from "../../components/inputs/main.input";
 import AuthLayout from "../../components/layouts/auth.layout";
@@ -13,6 +15,8 @@ export default function SignUp() {
   const [username, setUsername] = useState("");
 
   const toast = useToast();
+
+  const router = useRouter();
 
   const fetchApi = async () => {
     setLoading(true);
@@ -55,6 +59,10 @@ export default function SignUp() {
       })
       .finally(() => setLoading(false));
   };
+
+  useEffect(() => {
+    console.log(router);
+  }, []);
 
   return (
     <AuthLayout title="Sign Up" heading="Create your ePact account">

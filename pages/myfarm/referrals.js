@@ -16,19 +16,26 @@ import {
   useClipboard,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import AccountInvestmentsAddon from "../../addons/acount_investments.addon";
-import AdAddon from "../../addons/ad.addon";
-import BalanceAddon from "../../addons/balance.addon";
 import TableAddon from "../../addons/table.addon";
 import MainButton from "../../components/buttons/main.button";
-import OutlineButton from "../../components/buttons/outline.button";
 import MainInput from "../../components/inputs/main.input";
 import AccountLayout from "../../components/layouts/account.layout";
 import CardLayout from "../../components/layouts/card.layout";
 import ListLayout from "../../components/layouts/list.layout";
 
-export default function Account() {
-  let value = `${window.location.origin}?ref=ijele`;
+export default function Account(props) {
+  const { session } = props;
+
+  const ses = JSON.parse(session);
+
+  let value;
+
+  if (typeof window !== "undefined") {
+    value = `${window.location.origin || "https://www.epact.com.ng"}?ref=${
+      ses.user.username
+    }`;
+  }
+
   const { hasCopied, onCopy } = useClipboard(value);
 
   return (
@@ -59,4 +66,23 @@ export default function Account() {
       </Stack>
     </AccountLayout>
   );
+}
+
+export async function getServerSideProps({ req, res }) {
+  const { cookies: session } = req;
+
+  if (req && session) {
+    if (!session.session) {
+      return {
+        redirect: {
+          destination: "/auth/signin",
+          permanent: false,
+        },
+      };
+    }
+  }
+
+  return {
+    props: { session: session.session },
+  };
 }

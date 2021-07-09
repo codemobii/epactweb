@@ -91,20 +91,17 @@ export default function Account(props) {
 
         if (coupon !== "") {
           axios
-            .get(
-              `${process.env.NEXT_PUBLIC_API_URL}/credit-codes?code=${coupon}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${
-                    cookies.session && cookies.session.jwt
-                  }`,
-                },
-              }
-            )
+            .get(`${process.env.NEXT_PUBLIC_API_URL}/credit-codes/${coupon}`, {
+              headers: {
+                Authorization: `Bearer ${
+                  cookies.session && cookies.session.jwt
+                }`,
+              },
+            })
             .then((res) => {
               let codeId;
 
-              if (res.data.length === 0) {
+              if (!res.data) {
                 toast({
                   title: "Error",
                   description: "Credit code not found!",
@@ -112,7 +109,7 @@ export default function Account(props) {
                   duration: 9000,
                   isClosable: true,
                 });
-              } else if (res.data[0].Expired) {
+              } else if (res.data.Expired) {
                 toast({
                   title: "Error",
                   description: "Credit code has been used!",
@@ -120,7 +117,7 @@ export default function Account(props) {
                   duration: 9000,
                   isClosable: true,
                 });
-              } else if (res.data[0].amount < parseFloat(amount)) {
+              } else if (res.data.amount < parseFloat(amount)) {
                 toast({
                   title: "Error",
                   description:
@@ -129,8 +126,8 @@ export default function Account(props) {
                   duration: 9000,
                   isClosable: true,
                 });
-              } else if (res.data[0].amount > parseFloat(amount)) {
-                codeId = res.data[0]._id;
+              } else if (res.data.amount > parseFloat(amount)) {
+                codeId = res.data._id;
                 axios
                   .post(
                     `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
@@ -142,7 +139,7 @@ export default function Account(props) {
                       users_permissions_user: session.user._id,
                       type: "project",
                       paid: true,
-                      transaction_id: coupon,
+                      // transaction_id: coupon,
                     },
                     {
                       headers: {
@@ -366,7 +363,7 @@ export default function Account(props) {
               spacing="20px"
             >
               <MainInput
-                type="number"
+                type="text"
                 label={
                   <Text>
                     Have a credit code? (or{" "}
