@@ -101,15 +101,9 @@ export default function Account(props) {
             .then((res) => {
               let codeId;
 
-              if (!res.data) {
-                toast({
-                  title: "Error",
-                  description: "Credit code not found!",
-                  status: "error",
-                  duration: 9000,
-                  isClosable: true,
-                });
-              } else if (res.data.Expired) {
+              if (res.data.Expired) {
+                setLoading(false);
+                console.log("error 1");
                 toast({
                   title: "Error",
                   description: "Credit code has been used!",
@@ -118,6 +112,8 @@ export default function Account(props) {
                   isClosable: true,
                 });
               } else if (res.data.amount < parseFloat(amount)) {
+                setLoading(false);
+                console.log("error 2");
                 toast({
                   title: "Error",
                   description:
@@ -126,74 +122,88 @@ export default function Account(props) {
                   duration: 9000,
                   isClosable: true,
                 });
-              } else if (res.data.amount > parseFloat(amount)) {
-                codeId = res.data._id;
-                axios
-                  .post(
-                    `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
-                    {
-                      title: `Invested in ${project.title}`,
-                      description: `You invested in ${project.title} with the total sum of ${amount} using the coupon code ${coupon}`,
-                      amount: amount,
-                      project: project._id,
-                      users_permissions_user: session.user._id,
-                      type: "project",
-                      paid: true,
-                      // transaction_id: coupon,
-                    },
-                    {
-                      headers: {
-                        Authorization: `Bearer ${session.jwt}`,
+              } else {
+                console.log("started");
+                if (res.data.amount >= parseFloat(amount)) {
+                  console.log("error 3");
+                  codeId = res.data._id;
+                  axios
+                    .post(
+                      `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
+                      {
+                        title: `Invested in ${project.title}`,
+                        description: `You invested in ${project.title} with the total sum of ${amount} using the coupon code ${coupon}`,
+                        amount: amount,
+                        project: project._id,
+                        users_permissions_user: session.user._id,
+                        type: "project",
+                        paid: true,
+                        // transaction_id: coupon,
                       },
-                    }
-                  )
-                  .then(async (res) => {
-                    await axios
-                      .put(
-                        `${process.env.NEXT_PUBLIC_API_URL}/wallets/${
-                          cookies.session &&
-                          cookies.session.user &&
-                          cookies.session.user.wallet.id
-                        }`,
-                        {
-                          total_investment: numI + 1,
+                      {
+                        headers: {
+                          Authorization: `Bearer ${session.jwt}`,
                         },
-                        {
-                          headers: {
-                            Authorization: `Bearer ${
-                              cookies.session && cookies.session.jwt
-                            }`,
+                      }
+                    )
+                    .then(async (res) => {
+                      console.log("transact");
+                      await axios
+                        .put(
+                          `${process.env.NEXT_PUBLIC_API_URL}/wallets/${
+                            cookies.session &&
+                            cookies.session.user &&
+                            cookies.session.user.wallet.id
+                          }`,
+                          {
+                            total_investment: numI + 1,
                           },
-                        }
-                      )
-                      .then(async (res) => {
-                        await axios
-                          .put(
-                            `${process.env.NEXT_PUBLIC_API_URL}/credit-codes/${codeId}`,
-                            {
-                              Expired: true,
-                              use_date: new Date(),
-                              user: cookies.session.user._id,
+                          {
+                            headers: {
+                              Authorization: `Bearer ${
+                                cookies.session && cookies.session.jwt
+                              }`,
                             },
-                            {
-                              headers: {
-                                Authorization: `Bearer ${
-                                  cookies.session && cookies.session.jwt
-                                }`,
+                          }
+                        )
+                        .then(async (res) => {
+                          await axios
+                            .put(
+                              `${process.env.NEXT_PUBLIC_API_URL}/credit-codes/${codeId}`,
+                              {
+                                Expired: true,
+                                use_date: new Date(),
+                                user: cookies.session.user.id,
                               },
-                            }
-                          )
-                          .then((res) => {
-                            alert("Investment processed!");
-                            window.location.href = "/myfarm/projects";
-                          });
-                      });
-                  })
-                  .catch((er) => console.log(er));
+                              {
+                                headers: {
+                                  Authorization: `Bearer ${
+                                    cookies.session && cookies.session.jwt
+                                  }`,
+                                },
+                              }
+                            )
+                            .then((res) => {
+                              setLoading(false);
+                              alert("Investment processed!");
+                              window.location.href = "/myfarm/projects";
+                            });
+                        })
+                        .catch((er) => {
+                          setLoading(false);
+                          console.log(er);
+                        });
+                    })
+                    .catch((er) => {
+                      setLoading(false);
+                      console.log(er);
+                    });
+                }
               }
             })
             .catch((er) => {
               console.log(er);
+              setLoading(false);
               if (er.response && er.response.status === 500) {
                 toast({
                   title: "Error",
@@ -205,6 +215,7 @@ export default function Account(props) {
               }
             });
         } else {
+          setLoading(false);
           toast({
             title: "Error",
             description: "Please enter a credit code.",
@@ -278,8 +289,7 @@ export default function Account(props) {
           // });
         }
       })
-      .catch((er) => console.log(er))
-      .finally(() => setLoading(false));
+      .catch((er) => console.log(er));
   }
 
   return (

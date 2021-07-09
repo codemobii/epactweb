@@ -1,6 +1,7 @@
 import { Link, Stack, Text } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/react";
 import axios from "axios";
+import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useEffect } from "react";
@@ -18,6 +19,8 @@ export default function SignUp() {
 
   const router = useRouter();
 
+  const ref = Cookies.get("ref");
+
   const fetchApi = async () => {
     setLoading(true);
     await axios
@@ -27,28 +30,88 @@ export default function SignUp() {
         password: password,
       })
       .then(async (user) => {
-        axios
-          .post(
-            `${process.env.NEXT_PUBLIC_API_URL}/wallets`,
-            {
-              users_permissions_user: user.data.user.id,
-            },
-            {
+        if (ref) {
+          await axios
+            .get(`${process.env.NEXT_PUBLIC_API_URL}/users?username=${ref}`, {
               headers: {
                 Authorization: `Bearer ${user.data.jwt}`,
               },
-            }
-          )
-          .then((res) => {
-            if (typeof window != "undefined") {
-              window.location.href = "/auth/signin";
-            }
-          })
-          .catch((er) => console.log(er));
+            })
+            .then((res) => {
+              axios
+                .put(
+                  `${process.env.NEXT_PUBLIC_API_URL}/users/${user.data.user.id}`,
+                  {
+                    referral: res.data[0].id,
+                  },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${user.data.jwt}`,
+                    },
+                  }
+                )
+                .then(() => {
+                  axios
+                    .post(
+                      `${process.env.NEXT_PUBLIC_API_URL}/wallets`,
+                      {
+                        users_permissions_user: user.data.user.id,
+                      },
+                      {
+                        headers: {
+                          Authorization: `Bearer ${user.data.jwt}`,
+                        },
+                      }
+                    )
+                    .then((res) => {
+                      setLoading(false);
+                      if (typeof window != "undefined") {
+                        window.location.href = "/auth/signin";
+                      }
+                    })
+                    .catch((er) => {
+                      setLoading(false);
+                      console.log(er);
+                    });
+                })
+                .catch((er) => {
+                  setLoading(false);
+                  console.log(er);
+                });
+            })
+            .catch((er) => {
+              setLoading(false);
+              console.log(er);
+            });
+        } else {
+          axios
+            .post(
+              `${process.env.NEXT_PUBLIC_API_URL}/wallets`,
+              {
+                users_permissions_user: user.data.user.id,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${user.data.jwt}`,
+                },
+              }
+            )
+            .then((res) => {
+              setLoading(false);
+              if (typeof window != "undefined") {
+                window.location.href = "/auth/signin";
+              }
+            })
+            .catch((er) => {
+              setLoading(false);
+              console.log(er);
+            });
+        }
       })
       .catch((error) => {
         // Handle error.
         const er = error.response;
+        setLoading(false);
         toast({
           title: "Error",
           description: er.data.message[0].messages[0].message,
@@ -56,12 +119,13 @@ export default function SignUp() {
           duration: 9000,
           isClosable: true,
         });
-      })
-      .finally(() => setLoading(false));
+      });
   };
 
   useEffect(() => {
-    console.log(router);
+    if (router.query.ref && Cookies.set("ref", router.query.ref)) {
+      console.log("ref involved");
+    }
   }, []);
 
   return (
