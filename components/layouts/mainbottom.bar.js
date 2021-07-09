@@ -7,6 +7,7 @@ import {
   BsAppIndicator,
   BsArrowClockwise,
   BsBarChart,
+  BsBookmark,
   BsGrid,
 } from "react-icons/bs";
 
@@ -27,7 +28,7 @@ export default function MainBottombarLayout() {
     {
       label: "News",
       href: "/news",
-      icon: <BsArrowClockwise size="20px" />,
+      icon: <BsBookmark size="20px" />,
     },
     {
       label: "Feedback",

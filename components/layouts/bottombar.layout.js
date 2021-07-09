@@ -6,6 +6,8 @@ import {
   BsArrowClockwise,
   BsBarChart,
   BsGrid,
+  BsPeople,
+  BsPeopleCircle,
   BsPerson,
 } from "react-icons/bs";
 
@@ -21,7 +23,7 @@ export default function BottombarLayout() {
       left="0"
       d={{ base: "block", md: "none" }}
     >
-      <SimpleGrid columns={3} spacing="10px" w="100%" py="10px">
+      <SimpleGrid columns={4} spacing="10px" w="100%" py="10px">
         {NAV_LINKS.map((e, i) => (
           <Stack
             as="a"
@@ -50,11 +52,11 @@ const NAV_LINKS = [
     href: "/myfarm/projects",
     icon: <BsBarChart size="20px" />,
   },
-  // {
-  //   label: "History",
-  //   href: "/profile/history",
-  //   icon: <BsArrowClockwise size="20px" />,
-  // },
+  {
+    label: "Referrals",
+    href: "/myfarm/referrals",
+    icon: <BsPeople size="20px" />,
+  },
   {
     label: "Account",
     href: "/myfarm/settings",

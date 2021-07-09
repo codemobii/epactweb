@@ -66,14 +66,13 @@ export default function Account(props) {
 
   useEffect(async () => {
     setEmail(session.user.email);
-    setName(session.user.name);
+    setName(session.user.username);
   }, []);
 
   async function MakePayment(e) {
     e.preventDefault();
     const formRef = makeRef(20);
     setLoading(true);
-    console.log(amount);
     axios
       .get(
         `${process.env.NEXT_PUBLIC_API_URL}/wallets/${
@@ -103,7 +102,8 @@ export default function Account(props) {
               }
             )
             .then((res) => {
-              const codeId = res.data[0]._id;
+              let codeId;
+
               if (res.data.length === 0) {
                 toast({
                   title: "Error",
@@ -130,6 +130,7 @@ export default function Account(props) {
                   isClosable: true,
                 });
               } else if (res.data[0].amount > parseFloat(amount)) {
+                codeId = res.data[0]._id;
                 axios
                   .post(
                     `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
@@ -196,7 +197,7 @@ export default function Account(props) {
             })
             .catch((er) => {
               console.log(er);
-              if (er.response.status === 404) {
+              if (er.response && er.response.status === 404) {
                 toast({
                   title: "Error",
                   description: "Credit code not found!",
@@ -207,70 +208,77 @@ export default function Account(props) {
               }
             });
         } else {
-          FlutterwaveCheckout({
-            public_key: "FLWPUBK_TEST-c4c676322706278c4e45b09eb8ac0e4b-X",
-            tx_ref: formRef,
-            amount: amount,
-            currency: "NGN",
-            country: "NG",
-            payment_options: "card",
-            customer: {
-              email: email,
-              name: name,
-            },
-            callback: async (d) => {
-              console.log(d);
-              await axios
-                .post(
-                  `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
-                  {
-                    title: `Invested in ${project.title}`,
-                    description: `You invested in ${project.title} with the total sum of ${amount}`,
-                    amount: amount,
-                    project: project._id,
-                    users_permissions_user: session.user._id,
-                    type: "project",
-                    paid: d.status === "successful",
-                    transaction_id: d.transaction_id,
-                  },
-                  {
-                    headers: {
-                      Authorization: `Bearer ${session.jwt}`,
-                    },
-                  }
-                )
-                .then(async (res) => {
-                  await axios
-                    .put(
-                      `${process.env.NEXT_PUBLIC_API_URL}/wallets/${
-                        cookies.session &&
-                        cookies.session.user &&
-                        cookies.session.user.wallet.id
-                      }`,
-                      {
-                        total_investment: numI + 1,
-                      },
-                      {
-                        headers: {
-                          Authorization: `Bearer ${
-                            cookies.session && cookies.session.jwt
-                          }`,
-                        },
-                      }
-                    )
-                    .then((res) => {
-                      alert("Investment processed!");
-                      window.location.href = "/myfarm/projects";
-                    });
-                })
-                .catch((er) => console.log(er));
-            },
-            customizations: {
-              title: global.website_title,
-              description: `Invest in ${project.title}`,
-              logo: getStrapiMedia(global.favIcon),
-            },
+          toast({
+            title: "Error",
+            description: "Please enter a credit code.",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
           });
+          // FlutterwaveCheckout({
+          //   public_key: "FLWPUBK_TEST-c4c676322706278c4e45b09eb8ac0e4b-X",
+          //   tx_ref: formRef,
+          //   amount: amount,
+          //   currency: "NGN",
+          //   country: "NG",
+          //   payment_options: "card",
+          //   customer: {
+          //     email: email,
+          //     name: name,
+          //   },
+          //   callback: async (d) => {
+          //     console.log(d);
+          //     await axios
+          //       .post(
+          //         `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
+          //         {
+          //           title: `Invested in ${project.title}`,
+          //           description: `You invested in ${project.title} with the total sum of ${amount}`,
+          //           amount: amount,
+          //           project: project._id,
+          //           users_permissions_user: session.user._id,
+          //           type: "project",
+          //           paid: d.status === "successful",
+          //           transaction_id: d.transaction_id,
+          //         },
+          //         {
+          //           headers: {
+          //             Authorization: `Bearer ${session.jwt}`,
+          //           },
+          //         }
+          //       )
+          //       .then(async (res) => {
+          //         await axios
+          //           .put(
+          //             `${process.env.NEXT_PUBLIC_API_URL}/wallets/${
+          //               cookies.session &&
+          //               cookies.session.user &&
+          //               cookies.session.user.wallet.id
+          //             }`,
+          //             {
+          //               total_investment: numI + 1,
+          //             },
+          //             {
+          //               headers: {
+          //                 Authorization: `Bearer ${
+          //                   cookies.session && cookies.session.jwt
+          //                 }`,
+          //               },
+          //             }
+          //           )
+          //           .then((res) => {
+          //             alert("Investment processed!");
+          //             window.location.href = "/myfarm/projects";
+          //           });
+          //       })
+          //       .catch((er) => console.log(er));
+          //   },
+          //   customizations: {
+          //     title: global.website_title,
+          //     description: `Invest in ${project.title}`,
+          //     logo: getStrapiMedia(global.favIcon),
+          //   },
+          // });
         }
       })
       .catch((er) => console.log(er))
@@ -297,7 +305,7 @@ export default function Account(props) {
               <MainInput
                 type="name"
                 isRequired
-                label="Your fullname"
+                label="Username"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
