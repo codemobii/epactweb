@@ -67,6 +67,8 @@ export default function Account(props) {
   useEffect(async () => {
     setEmail(session.user.email);
     setName(session.user.username);
+
+    // console.log(global);
   }, []);
 
   async function MakePayment(e) {
@@ -156,7 +158,7 @@ export default function Account(props) {
                             cookies.session.user.wallet.id
                           }`,
                           {
-                            total_investment: numI + 1,
+                            total_investment: numI + parseFloat(amount),
                           },
                           {
                             headers: {
@@ -184,9 +186,75 @@ export default function Account(props) {
                               }
                             )
                             .then((res) => {
-                              setLoading(false);
-                              alert("Investment processed!");
-                              window.location.href = "/myfarm/projects";
+                              if (session.user.referral) {
+                                axios
+                                  .get(
+                                    `${process.env.NEXT_PUBLIC_API_URL}/users/${session.user.referral}`,
+                                    {
+                                      headers: {
+                                        Authorization: `Bearer ${
+                                          cookies.session && cookies.session.jwt
+                                        }`,
+                                      },
+                                    }
+                                  )
+                                  .then((res) => {
+                                    console.log(res);
+                                    const refW = res.data.wallet.id;
+                                    const refB = res.data.wallet.balance;
+                                    axios.put(
+                                      `${process.env.NEXT_PUBLIC_API_URL}/wallets/${refW}`,
+                                      {
+                                        balance:
+                                          refB +
+                                          (global.referral / 100) * amount,
+                                      },
+                                      {
+                                        headers: {
+                                          Authorization: `Bearer ${
+                                            cookies.session &&
+                                            cookies.session.jwt
+                                          }`,
+                                        },
+                                      }
+                                    );
+                                  })
+                                  .then((res) => {
+                                    axios.post(
+                                      `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
+                                      {
+                                        title: `Referral Bonus!`,
+                                        description: `You recieved referral bonus of ${
+                                          (global.referral / 100) * amount
+                                        } from ${session.user.username}`,
+                                        amount:
+                                          (global.referral / 100) * amount,
+                                        project: project._id,
+                                        users_permissions_user:
+                                          session.user.referral,
+                                        type: "bonus",
+                                        paid: true,
+                                        // transaction_id: coupon,
+                                      },
+                                      {
+                                        headers: {
+                                          Authorization: `Bearer ${session.jwt}`,
+                                        },
+                                      }
+                                    );
+                                  })
+                                  .then((res) => {
+                                    console.log("Done", res);
+
+                                    setLoading(false);
+                                    alert("Investment processed!");
+                                    window.location.href = "/myfarm/projects";
+                                  });
+                              } else {
+                                setLoading(false);
+                                alert("Investment processed!");
+                                window.location.href = "/myfarm/projects";
+                              }
                             });
                         })
                         .catch((er) => {

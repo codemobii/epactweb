@@ -18,7 +18,17 @@ export default function BalanceAddon({ data = {} }) {
         />
       ),
     },
-    { label: "Total investment", value: data.total_investment ?? 0 },
+    {
+      label: "Total investment",
+      value: (
+        <NumberFormat
+          value={data.total_investment ?? 0}
+          displayType={"text"}
+          thousandSeparator={true}
+          prefix={"₦"}
+        />
+      ),
+    },
     {
       label: "Total ROI",
       value: (

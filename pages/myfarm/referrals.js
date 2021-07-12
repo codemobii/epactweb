@@ -111,9 +111,10 @@ export default function Account(props) {
                           <Td>{key + 1}</Td>
                           <Td>{data.username}</Td>
                           <Td>
-                            <Moment format="MMM Do YYYY">
-                              {data.created_at}
-                            </Moment>
+                            <Moment
+                              format="MMM Do YYYY"
+                              date={data.created_at}
+                            ></Moment>
                           </Td>
                         </Tr>
                       ))}
