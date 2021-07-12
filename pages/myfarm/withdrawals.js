@@ -140,6 +140,8 @@ export default function Account(props) {
                   setRequesting(false);
                   setIsOpen(false);
 
+                  getItems();
+
                   toast({
                     title: "Successful",
                     description: `Withdrawal request of ${amount} has been submitted for approval, thank you.`,
@@ -147,8 +149,6 @@ export default function Account(props) {
                     duration: 9000,
                     isClosable: true,
                   });
-
-                  getItems();
 
                   var templateParams = {
                     all_title: "New Withdrawal Request",
@@ -290,7 +290,9 @@ export default function Account(props) {
             isClosable: true,
           });
         })
-        .finally(() => getItems());
+        .finally(() => {
+          getItems();
+        });
     }
   };
 

@@ -1,3 +1,4 @@
+import Head from "next/head";
 import React from "react";
 import AboutAddon from "../addons/about.addon";
 import BannerAddon from "../addons/banner.addon";
@@ -14,6 +15,12 @@ export default function Home(props) {
 
   return (
     <MainLayout>
+      <Head>
+        <meta
+          name="facebook-domain-verification"
+          content="g2layh6xwk7r1rcqlokjrgqq15mldh"
+        />
+      </Head>
       <BannerAddon
         title={header.heading}
         video={header.video}

@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 import MainButton from "../../components/buttons/main.button";
 import MainInput from "../../components/inputs/main.input";
 import AuthLayout from "../../components/layouts/auth.layout";
+import Head from "next/head";
 
 export default function Signin({ req, res }) {
   const [loading, setLoading] = useState(false);
@@ -62,6 +63,12 @@ export default function Signin({ req, res }) {
 
   return (
     <AuthLayout title="Sign In" heading="Sign in to your account">
+      <Head>
+        <meta
+          name="facebook-domain-verification"
+          content="g2layh6xwk7r1rcqlokjrgqq15mldh"
+        />
+      </Head>
       <Stack spacing={4}>
         <MainInput
           id="email"
