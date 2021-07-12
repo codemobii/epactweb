@@ -31,6 +31,7 @@ export default function UserinfoAddon({
   id = "",
   jwt = "",
   update = false,
+  href = null,
 
   onEnd = () => {
     //
@@ -78,8 +79,10 @@ export default function UserinfoAddon({
       <CardLayout>
         <Flex
           onClick={onOpen}
+          as={href ? "a" : "div"}
+          href={href && href}
           cursor="pointer"
-          pointerEvents={!isEdit && "none"}
+          pointerEvents={!isEdit || (href && "none")}
           align="center"
           p="20px"
           justify="space-between"
@@ -123,7 +126,7 @@ export default function UserinfoAddon({
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     label={label}
-                    read={update}
+                    // read={update}
                   />
                 </Stack>
               ) : (

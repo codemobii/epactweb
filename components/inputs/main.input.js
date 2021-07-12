@@ -1,4 +1,9 @@
-import { FormControl, FormLabel, Input } from "@chakra-ui/react";
+import {
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Input,
+} from "@chakra-ui/react";
 import React from "react";
 
 export default function MainInput({
@@ -8,6 +13,7 @@ export default function MainInput({
   type = "email",
   read = false,
   value = "",
+  helper = null,
   onChange = () => {
     //
   },
@@ -22,7 +28,7 @@ export default function MainInput({
         border="2px"
         type={type}
       />
-      {/* <FormHelperText>We'll never share your email.</FormHelperText> */}
+      {helper && <FormHelperText>{helper}</FormHelperText>}
     </FormControl>
   );
 }

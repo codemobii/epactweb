@@ -6,6 +6,7 @@ export default function MainButton({
   onClick = () => {},
   loading = false,
   link = false,
+  isSubmit = false,
 }) {
   return (
     <Button
@@ -28,6 +29,7 @@ export default function MainButton({
       onClick={onClick}
       isLoading={loading}
       loadingText="Loading"
+      type={isSubmit ? "submit" : "button"}
     >
       {title}
     </Button>

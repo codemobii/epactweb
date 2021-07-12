@@ -9,6 +9,7 @@ import {
   BsPeople,
   BsPeopleCircle,
   BsPerson,
+  BsWallet,
 } from "react-icons/bs";
 
 export default function BottombarLayout() {
@@ -23,7 +24,7 @@ export default function BottombarLayout() {
       left="0"
       d={{ base: "block", md: "none" }}
     >
-      <SimpleGrid columns={4} spacing="10px" w="100%" py="10px">
+      <SimpleGrid columns={5} spacing="10px" w="100%" py="20px">
         {NAV_LINKS.map((e, i) => (
           <Stack
             as="a"
@@ -33,7 +34,7 @@ export default function BottombarLayout() {
             key={i}
           >
             {e.icon}
-            <Text fontSize="sm">{e.label}</Text>
+            {/* <Text fontSize="sm">{e.label}</Text> */}
           </Stack>
         ))}
       </SimpleGrid>
@@ -51,6 +52,11 @@ const NAV_LINKS = [
     label: "Projects",
     href: "/myfarm/projects",
     icon: <BsBarChart size="20px" />,
+  },
+  {
+    label: "Withdrawals",
+    href: "/myfarm/withdrawals",
+    icon: <BsWallet size="18px" />,
   },
   {
     label: "Referrals",

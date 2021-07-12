@@ -7,7 +7,7 @@ export default function ListLayout({
   buttons = false,
 }) {
   return (
-    <Box>
+    <Box overflowY="auto">
       <Flex p="20px">
         {title && (
           <Text fontWeight="medium" textTransform="uppercase">

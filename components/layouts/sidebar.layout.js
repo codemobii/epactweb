@@ -3,7 +3,13 @@ import { Image } from "@chakra-ui/image";
 import { Box, Center, Flex, Stack } from "@chakra-ui/layout";
 import Link from "next/link";
 import React, { useContext } from "react";
-import { BsBarChart, BsGrid, BsPeople, BsPeopleCircle } from "react-icons/bs";
+import {
+  BsBarChart,
+  BsGrid,
+  BsPeople,
+  BsPeopleCircle,
+  BsWallet,
+} from "react-icons/bs";
 import { GlobalContext } from "../../pages/_app";
 import { getStrapiMedia } from "../../utils/media.util";
 import BgIllustration from "../helpers/bg_illus.helper";
@@ -72,6 +78,11 @@ const NAV_LINKS = [
     label: "Projects",
     href: "/myfarm/projects",
     icon: <BsBarChart size="18px" />,
+  },
+  {
+    label: "Withdrawals",
+    href: "/myfarm/withdrawals",
+    icon: <BsWallet size="18px" />,
   },
   {
     label: "Referrals",

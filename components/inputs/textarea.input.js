@@ -7,11 +7,19 @@ export default function TextareaInput({
   isRequired = false,
   read = false,
   value = "",
+  onChange = () => {
+    //
+  },
 }) {
   return (
     <FormControl id={id} isReadOnly={read} isRequired={isRequired}>
       <FormLabel>{label}</FormLabel>
-      <Textarea borderColor="green.400" value={value} border="2px" />
+      <Textarea
+        borderColor="green.400"
+        value={value}
+        onChange={onChange}
+        border="2px"
+      />
       {/* <FormHelperText>We'll never share your email.</FormHelperText> */}
     </FormControl>
   );

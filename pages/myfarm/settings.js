@@ -186,7 +186,12 @@ export default function AccountSettings(props) {
 
         <Stack spacing="10px">
           {O_DATA.map((data, key) => (
-            <UserinfoAddon value={data.value} icon={data.icon} key={key} />
+            <UserinfoAddon
+              value={data.value}
+              icon={data.icon}
+              key={key}
+              href={data.href}
+            />
           ))}
         </Stack>
       </Stack>
@@ -195,10 +200,13 @@ export default function AccountSettings(props) {
 }
 
 const O_DATA = [
-  { value: "Status", icon: <BsAwardFill /> },
-  { value: "Help & Support", icon: <BsQuestionCircleFill /> },
-  { value: "Privacy and Policy", icon: <BsShieldFill /> },
-  { value: "About us", icon: <BsInfoCircleFill /> },
+  { value: "Help & Support", icon: <BsQuestionCircleFill />, href: "/faqs" },
+  {
+    value: "Privacy and Policy",
+    icon: <BsShieldFill />,
+    href: "/pages/privacy-policy",
+  },
+  { value: "About us", icon: <BsInfoCircleFill />, href: "/about" },
 ];
 
 export async function getServerSideProps({ req, res }) {
