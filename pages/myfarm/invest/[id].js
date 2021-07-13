@@ -31,6 +31,7 @@ import { fetchAPI } from "../../../utils/api.util";
 import { getStrapiMedia } from "../../../utils/media.util";
 import { GlobalContext } from "../../_app";
 import { useCookies } from "react-cookie";
+import ReactMarkdown from "react-markdown";
 import NumberFormat from "react-number-format";
 
 export default function Account(props) {
@@ -68,7 +69,7 @@ export default function Account(props) {
     setEmail(session.user.email);
     setName(session.user.username);
 
-    // console.log(global);
+    console.log(project);
   }, []);
 
   async function MakePayment(e) {
@@ -90,6 +91,8 @@ export default function Account(props) {
       )
       .then((res) => {
         const numI = res.data.total_investment || 0;
+
+        const ROI = res.data.ROI || 0;
 
         if (coupon !== "") {
           axios
@@ -159,6 +162,11 @@ export default function Account(props) {
                           }`,
                           {
                             total_investment: numI + parseFloat(amount),
+                            ROI:
+                              ROI +
+                              (project.interest / 100) *
+                                amount *
+                                project.how_many_months_for_income,
                           },
                           {
                             headers: {
@@ -371,7 +379,8 @@ export default function Account(props) {
               </Box>
               <Text color="gray.500">Project details</Text>
             </HStack>
-            <Text>{project.description}</Text>
+
+            <ReactMarkdown children={project.description} />
           </Stack>
         </CardLayout>
         <CardLayout>
