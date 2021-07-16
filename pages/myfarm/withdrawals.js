@@ -170,6 +170,12 @@ export default function Account(props) {
                         console.log("FAILED...", err);
                       }
                     );
+
+                  axios.post(`${process.env.NEXT_PUBLIC_API_URL}/emails`, {
+                    email: ses.user.email,
+                    message: `You have requested withdrawal of ${amount}. We just want to acknowledge the request and we will get back to you soon.`,
+                    subject: "Withdrawal Request",
+                  });
                 })
                 .catch((er) => {
                   console.log(er);

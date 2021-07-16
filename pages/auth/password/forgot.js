@@ -22,9 +22,13 @@ export default function ForgotPassword({ req, res }) {
         email: email,
       })
       .then((response) => {
-        if (typeof window != "undefined") {
-          window.location.href = "/auth/password/reset";
-        }
+        toast({
+          title: "Success",
+          description: "Please check your email to continue",
+          status: "success",
+          duration: 15000,
+          isClosable: true,
+        });
       })
       .catch((error) => {
         // Handle error.

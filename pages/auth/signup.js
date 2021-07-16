@@ -37,47 +37,102 @@ export default function SignUp() {
                 Authorization: `Bearer ${user.data.jwt}`,
               },
             })
-            .then((res) => {
-              axios
-                .put(
-                  `${process.env.NEXT_PUBLIC_API_URL}/users/${user.data.user.id}`,
-                  {
-                    referral: res.data[0].id,
-                  },
-                  {
-                    headers: {
-                      Authorization: `Bearer ${user.data.jwt}`,
+            .then((ref) => {
+              if (ref.data.length === 0) {
+                axios
+                  .post(
+                    `${process.env.NEXT_PUBLIC_API_URL}/wallets`,
+                    {
+                      users_permissions_user: user.data.user.id,
                     },
-                  }
-                )
-                .then(() => {
-                  axios
-                    .post(
-                      `${process.env.NEXT_PUBLIC_API_URL}/wallets`,
-                      {
-                        users_permissions_user: user.data.user.id,
+                    {
+                      headers: {
+                        Authorization: `Bearer ${user.data.jwt}`,
                       },
-                      {
-                        headers: {
-                          Authorization: `Bearer ${user.data.jwt}`,
+                    }
+                  )
+                  .then((res) => {
+                    setLoading(false);
+                    axios
+                      .post(`${process.env.NEXT_PUBLIC_API_URL}/emails`, {
+                        email: user.data.user.email,
+                        message:
+                          "Welcome to ePact, your journey through agritech that pays has just started",
+                        subject: "Welcome Note from ePact",
+                      })
+                      .then(() => {
+                        if (typeof window != "undefined") {
+                          window.location.href = "/auth/signin";
+                        }
+                      });
+                  })
+                  .catch((er) => {
+                    setLoading(false);
+                    console.log(er);
+                  });
+              } else {
+                axios
+                  .put(
+                    `${process.env.NEXT_PUBLIC_API_URL}/users/${user.data.user.id}`,
+                    {
+                      referral: ref.data[0].id,
+                    },
+                    {
+                      headers: {
+                        Authorization: `Bearer ${user.data.jwt}`,
+                      },
+                    }
+                  )
+                  .then(() => {
+                    axios
+                      .post(
+                        `${process.env.NEXT_PUBLIC_API_URL}/wallets`,
+                        {
+                          users_permissions_user: user.data.user.id,
                         },
-                      }
-                    )
-                    .then((res) => {
-                      setLoading(false);
-                      if (typeof window != "undefined") {
-                        window.location.href = "/auth/signin";
-                      }
-                    })
-                    .catch((er) => {
-                      setLoading(false);
-                      console.log(er);
-                    });
-                })
-                .catch((er) => {
-                  setLoading(false);
-                  console.log(er);
-                });
+                        {
+                          headers: {
+                            Authorization: `Bearer ${user.data.jwt}`,
+                          },
+                        }
+                      )
+                      .then((res) => {
+                        setLoading(false);
+
+                        axios
+                          .post(`${process.env.NEXT_PUBLIC_API_URL}/emails`, {
+                            email: user.data.user.email,
+                            message:
+                              "Welcome to ePact, your journey through agritech that pays has just started",
+                            subject: "Welcome Note from ePact",
+                          })
+                          .then(() => {
+                            axios
+                              .post(
+                                `${process.env.NEXT_PUBLIC_API_URL}/emails`,
+                                {
+                                  email: ref.data[0].email,
+                                  message: `${ref.data[0].username} you have a new referral signup on epact. Keep up the good work!`,
+                                  subject: "Referral Signup",
+                                }
+                              )
+                              .then(() => {
+                                if (typeof window != "undefined") {
+                                  window.location.href = "/auth/signin";
+                                }
+                              });
+                          });
+                      })
+                      .catch((er) => {
+                        setLoading(false);
+                        console.log(er);
+                      });
+                  })
+                  .catch((er) => {
+                    setLoading(false);
+                    console.log(er);
+                  });
+              }
             })
             .catch((er) => {
               setLoading(false);
@@ -98,9 +153,18 @@ export default function SignUp() {
             )
             .then((res) => {
               setLoading(false);
-              if (typeof window != "undefined") {
-                window.location.href = "/auth/signin";
-              }
+              axios
+                .post(`${process.env.NEXT_PUBLIC_API_URL}/emails`, {
+                  email: user.data.user.email,
+                  message:
+                    "Welcome to ePact, your journey through agritech that pays has just started",
+                  subject: "Welcome Note from ePact",
+                })
+                .then(() => {
+                  if (typeof window != "undefined") {
+                    window.location.href = "/auth/signin";
+                  }
+                });
             })
             .catch((er) => {
               setLoading(false);
