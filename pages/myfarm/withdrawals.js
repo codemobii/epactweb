@@ -144,7 +144,7 @@ export default function Account(props) {
 
                   toast({
                     title: "Successful",
-                    description: `Withdrawal request of ${amount} has been submitted for approval, thank you.`,
+                    description: `Withdrawal request of ₦${amount} has been submitted for approval, thank you.`,
                     status: "success",
                     duration: 9000,
                     isClosable: true,
@@ -173,7 +173,7 @@ export default function Account(props) {
 
                   axios.post(`${process.env.NEXT_PUBLIC_API_URL}/emails`, {
                     email: ses.user.email,
-                    message: `You have requested withdrawal of ${amount}. We just want to acknowledge the request and we will get back to you soon.`,
+                    message: `You have requested withdrawal of ₦${amount}. We just want to acknowledge the request and we will get back to you soon.`,
                     subject: "Withdrawal Request",
                   });
                 })
@@ -195,7 +195,7 @@ export default function Account(props) {
               if (er.response && er.response.status === 400) {
                 toast({
                   title: "Error",
-                  description: "amount must be greater than or equal to 2500",
+                  description: "amount must be greater than or equal to ₦2500",
                   status: "error",
                   duration: 9000,
                   isClosable: true,

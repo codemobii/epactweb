@@ -162,7 +162,7 @@ export default function Account(props) {
                       `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
                       {
                         title: `Invested in ${project.title}`,
-                        description: `You invested in ${project.title} with the total sum of ${amount} using the coupon code ${coupon}`,
+                        description: `You invested in ${project.title} with the total sum of ₦${amount} using the coupon code ${coupon}`,
                         amount: amount,
                         project: project._id,
                         users_permissions_user: session.user._id,
@@ -245,7 +245,8 @@ export default function Account(props) {
                                         {
                                           balance:
                                             refB +
-                                            (project.referral / 100) * amount,
+                                            (project.referral_bonus / 100) *
+                                              amount,
                                         },
                                         {
                                           headers: {
@@ -262,12 +263,12 @@ export default function Account(props) {
                                             `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
                                             {
                                               title: `Referral Bonus!`,
-                                              description: `You recieved referral bonus of ${
-                                                (project.referral / 100) *
+                                              description: `You recieved referral bonus of ₦${
+                                                (project.referral_bonus / 100) *
                                                 amount
                                               } from ${session.user.username}`,
                                               amount:
-                                                (project.referral / 100) *
+                                                (project.referral_bonus / 100) *
                                                 amount,
                                               project: project._id,
                                               users_permissions_user:
@@ -290,8 +291,9 @@ export default function Account(props) {
                                                 `${process.env.NEXT_PUBLIC_API_URL}/emails`,
                                                 {
                                                   email: refE,
-                                                  message: `You recieved referral bonus of ${
-                                                    (project.referral / 100) *
+                                                  message: `You recieved referral bonus of ₦${
+                                                    (project.referral_bonus /
+                                                      100) *
                                                     amount
                                                   }! Continue using ePact.`,
                                                   subject: "Refferal Bonus",
@@ -308,8 +310,8 @@ export default function Account(props) {
                                                       message: `Your investment in the project ${
                                                         project.title
                                                       } was successful.<br />
-                                              Amount invested: ${amount}<br />
-                                              Total ROI: ${
+                                              Amount invested: ₦${amount}<br />
+                                              Total ROI: ₦${
                                                 (project.interest / 100) *
                                                 amount *
                                                 project.how_many_months_for_income
@@ -340,8 +342,8 @@ export default function Account(props) {
                                       message: `Your investment in the project ${
                                         project.title
                                       } was successful.<br />
-                                              Amount invested: ${amount}<br />
-                                              Total ROI: ${
+                                              Amount invested: ₦${amount}<br />
+                                              Total ROI: ₦${
                                                 (project.interest / 100) *
                                                 amount *
                                                 project.how_many_months_for_income
