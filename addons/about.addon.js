@@ -8,6 +8,8 @@ import {
   Text,
 } from "@chakra-ui/layout";
 import React from "react";
+import ReactMarkdown from "react-markdown";
+
 import MainButton from "../components/buttons/main.button";
 import TitleHelper from "../components/helpers/title.helper";
 import BoxContainer from "../components/layouts/container.layout";
@@ -34,7 +36,9 @@ export default function AboutAddon({
           </Box>
           <Stack spacing="30px">
             <TitleHelper>{title}</TitleHelper>
-            <Text>{description}</Text>
+            <Text>
+              <ReactMarkdown children={description} />
+            </Text>
             {isHome && (
               <Center>
                 <MainButton link="/about" title="Read More" />
