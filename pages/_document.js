@@ -35,8 +35,8 @@ class MyDocument extends Document {
           {/* <script
             type="text/javascript"
             src="https://ravesandbox.flutterwave.com/flwv3-pug/getpaidx/api/flwpbf-inline.js"
-          ></script>
-          <script src="https://checkout.flutterwave.com/v3.js"></script> */}
+          ></script> */}
+          <script src="https://checkout.flutterwave.com/v3.js"></script>
         </body>
       </Html>
     );

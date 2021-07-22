@@ -395,70 +395,234 @@ export default function Account(props) {
             duration: 9000,
             isClosable: true,
           });
-          // FlutterwaveCheckout({
-          //   public_key: "FLWPUBK_TEST-c4c676322706278c4e45b09eb8ac0e4b-X",
-          //   tx_ref: formRef,
-          //   amount: amount,
-          //   currency: "NGN",
-          //   country: "NG",
-          //   payment_options: "card",
-          //   customer: {
-          //     email: email,
-          //     name: name,
-          //   },
-          //   callback: async (d) => {
-          //     console.log(d);
-          //     await axios
-          //       .post(
-          //         `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
-          //         {
-          //           title: `Invested in ${project.title}`,
-          //           description: `You invested in ${project.title} with the total sum of ${amount}`,
-          //           amount: amount,
-          //           project: project._id,
-          //           users_permissions_user: session.user._id,
-          //           type: "project",
-          //           paid: d.status === "successful",
-          //           transaction_id: d.transaction_id,
-          //         },
-          //         {
-          //           headers: {
-          //             Authorization: `Bearer ${session.jwt}`,
-          //           },
-          //         }
-          //       )
-          //       .then(async (res) => {
-          //         await axios
-          //           .put(
-          //             `${process.env.NEXT_PUBLIC_API_URL}/wallets/${
-          //               cookies.session &&
-          //               cookies.session.user &&
-          //               cookies.session.user.wallet.id
-          //             }`,
-          //             {
-          //               total_investment: numI + 1,
-          //             },
-          //             {
-          //               headers: {
-          //                 Authorization: `Bearer ${
-          //                   cookies.session && cookies.session.jwt
-          //                 }`,
-          //               },
-          //             }
-          //           )
-          //           .then((res) => {
-          //             alert("Investment processed!");
-          //             window.location.href = "/myfarm/projects";
-          //           });
-          //       })
-          //       .catch((er) => console.log(er));
-          //   },
-          //   customizations: {
-          //     title: global.website_title,
-          //     description: `Invest in ${project.title}`,
-          //     logo: getStrapiMedia(global.favIcon),
-          //   },
-          // });
+          FlutterwaveCheckout({
+            public_key: "FLWPUBK_TEST-c4c676322706278c4e45b09eb8ac0e4b-X",
+            tx_ref: formRef,
+            amount: amount,
+            currency: "NGN",
+            country: "NG",
+            payment_options: "card",
+            customer: {
+              email: email,
+              name: name,
+            },
+            callback: async (d) => {
+              console.log(d);
+              await axios
+                .post(
+                  `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
+                  {
+                    title: `Invested in ${project.title}`,
+                    description: `You invested in ${project.title} with the total sum of ${amount}`,
+                    amount: amount,
+                    project: project._id,
+                    users_permissions_user: session.user._id,
+                    type: "project",
+                    paid: d.status === "successful",
+                    transaction_id: d.transaction_id,
+                  },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${session.jwt}`,
+                    },
+                  }
+                )
+                .then(async (res) => {
+                  axios
+                    .post(
+                      `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
+                      {
+                        title: `Invested in ${project.title}`,
+                        description: `You invested in ${project.title} with the total sum of ₦${amount} using the coupon code ${coupon}`,
+                        amount: amount,
+                        project: project._id,
+                        users_permissions_user: session.user._id,
+                        type: "project",
+                        paid: true,
+                        // transaction_id: coupon,
+                      },
+                      {
+                        headers: {
+                          Authorization: `Bearer ${session.jwt}`,
+                        },
+                      }
+                    )
+                    .then(async (res) => {
+                      console.log("transact");
+                      await axios
+                        .put(
+                          `${process.env.NEXT_PUBLIC_API_URL}/wallets/${
+                            cookies.session &&
+                            cookies.session.user &&
+                            cookies.session.user.wallet.id
+                          }`,
+                          {
+                            total_investment: numI + parseFloat(amount),
+                            ROI:
+                              ROI +
+                              (project.interest / 100) *
+                                amount *
+                                project.how_many_months_for_income,
+                          },
+                          {
+                            headers: {
+                              Authorization: `Bearer ${
+                                cookies.session && cookies.session.jwt
+                              }`,
+                            },
+                          }
+                        )
+                        .then(async (res) => {
+                          if (session.user.referral && investmentCount === 0) {
+                            axios
+                              .get(
+                                `${process.env.NEXT_PUBLIC_API_URL}/users/${session.user.referral}`,
+                                {
+                                  headers: {
+                                    Authorization: `Bearer ${
+                                      cookies.session && cookies.session.jwt
+                                    }`,
+                                  },
+                                }
+                              )
+                              .then((res) => {
+                                console.log(res);
+                                const refW = res.data.wallet.id;
+                                const refB = res.data.wallet.balance;
+                                let refE = res.data.email;
+                                axios
+                                  .put(
+                                    `${process.env.NEXT_PUBLIC_API_URL}/wallets/${refW}`,
+                                    {
+                                      balance:
+                                        refB +
+                                        (project.referral_bonus / 100) * amount,
+                                    },
+                                    {
+                                      headers: {
+                                        Authorization: `Bearer ${
+                                          cookies.session && cookies.session.jwt
+                                        }`,
+                                      },
+                                    }
+                                  )
+                                  .then((res) => {
+                                    axios
+                                      .post(
+                                        `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
+                                        {
+                                          title: `Referral Bonus!`,
+                                          description: `You recieved referral bonus of ₦${
+                                            (project.referral_bonus / 100) *
+                                            amount
+                                          } from ${session.user.username}`,
+                                          amount:
+                                            (project.referral_bonus / 100) *
+                                            amount,
+                                          project: project._id,
+                                          users_permissions_user:
+                                            session.user.referral,
+                                          type: "bonus",
+                                          paid: true,
+                                          // transaction_id: coupon,
+                                        },
+                                        {
+                                          headers: {
+                                            Authorization: `Bearer ${session.jwt}`,
+                                          },
+                                        }
+                                      )
+                                      .then((res) => {
+                                        console.log("Done", res);
+
+                                        axios
+                                          .post(
+                                            `${process.env.NEXT_PUBLIC_API_URL}/emails`,
+                                            {
+                                              email: refE,
+                                              message: `You recieved referral bonus of ₦${
+                                                (project.referral_bonus / 100) *
+                                                amount
+                                              }! Continue using ePact.`,
+                                              subject: "Refferal Bonus",
+                                            }
+                                          )
+                                          .then(() => {
+                                            axios
+                                              .post(
+                                                `${process.env.NEXT_PUBLIC_API_URL}/emails`,
+                                                {
+                                                  email:
+                                                    cookies.session.user.email,
+                                                  message: `Your investment in the project ${
+                                                    project.title
+                                                  } was successful.<br />
+                                              Amount invested: ₦${amount}<br />
+                                              Total ROI: ₦${
+                                                (project.interest / 100) *
+                                                amount *
+                                                project.how_many_months_for_income
+                                              }<br />
+                                              Project Details<br />
+                                              ${project.description}`,
+                                                  subject: `Invested in ${project.title}`,
+                                                }
+                                              )
+                                              .then(() => {
+                                                setLoading(false);
+                                                alert("Investment processed!");
+                                                window.location.href =
+                                                  "/myfarm/projects";
+                                              });
+                                          });
+                                      });
+                                  });
+                              });
+                          } else {
+                            axios
+                              .post(
+                                `${process.env.NEXT_PUBLIC_API_URL}/emails`,
+                                {
+                                  email: cookies.session.user.email,
+                                  message: `Your investment in the project ${
+                                    project.title
+                                  } was successful.<br />
+                                              Amount invested: ₦${amount}<br />
+                                              Total ROI: ₦${
+                                                (project.interest / 100) *
+                                                amount *
+                                                project.how_many_months_for_income
+                                              }<br />
+                                              Project Details<br />
+                                              ${project.description}`,
+                                  subject: `Invested in ${project.title}`,
+                                }
+                              )
+                              .then(() => {
+                                setLoading(false);
+                                alert("Investment processed!");
+                                window.location.href = "/myfarm/projects";
+                              });
+                          }
+                        })
+                        .catch((er) => {
+                          setLoading(false);
+                          console.log(er);
+                        });
+                    })
+                    .catch((er) => {
+                      setLoading(false);
+                      console.log(er);
+                    });
+                })
+                .catch((er) => console.log(er));
+            },
+            customizations: {
+              title: global.website_title,
+              description: `Invest in ${project.title}`,
+              logo: getStrapiMedia(global.favIcon),
+            },
+          });
         }
       })
       .catch((er) => console.log(er));
