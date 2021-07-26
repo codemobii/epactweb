@@ -18,6 +18,7 @@ import {
   NumberDecrementStepper,
   useToast,
   Link,
+  Select,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useContext, useEffect } from "react";
@@ -48,6 +49,7 @@ export default function Account(props) {
   const [email, setEmail] = useState("");
   const [coupon, setCoupon] = useState("");
   const [loading, setLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("");
 
   const [investmentCount, setInvestmentCount] = useState(0);
 
@@ -119,7 +121,7 @@ export default function Account(props) {
 
         const ROI = res.data.ROI || 0;
 
-        if (coupon !== "") {
+        if (paymentMethod === "coupon" && coupon !== "") {
           axios
             .get(`${process.env.NEXT_PUBLIC_API_URL}/credit-codes/${coupon}`, {
               headers: {
@@ -631,39 +633,55 @@ export default function Account(props) {
               />
             </HStack>
 
-            <FormControl>
-              <FormLabel>Amount to invest</FormLabel>
-              <NumberInput
-                step={project.minimum}
-                min={project.minimum}
-                max={project.maximum}
-                onChange={(valueString) => setAmount(parse(valueString))}
-                value={format(amount)}
-              >
-                <NumberInputField readOnly />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-              <FormHelperText>
-                You can only invest from{" "}
-                <NumberFormat
-                  value={project.minimum}
-                  displayType={"text"}
-                  thousandSeparator={true}
-                  prefix={"₦"}
-                />{" "}
-                to{" "}
-                <NumberFormat
-                  value={project.maximum}
-                  displayType={"text"}
-                  thousandSeparator={true}
-                  prefix={"₦"}
-                />
-                , use the stepper buttons to increase/decrease amount.
-              </FormHelperText>
-            </FormControl>
+            <Stack direction={{ base: "column", md: "row" }} align="flex-start">
+              <FormControl>
+                <FormLabel>Amount to invest</FormLabel>
+                <NumberInput
+                  step={project.minimum}
+                  min={project.minimum}
+                  max={project.maximum}
+                  onChange={(valueString) => setAmount(parse(valueString))}
+                  value={format(amount)}
+                >
+                  <NumberInputField readOnly />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+                <FormHelperText>
+                  You can only invest from{" "}
+                  <NumberFormat
+                    value={project.minimum}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    prefix={"₦"}
+                  />{" "}
+                  to{" "}
+                  <NumberFormat
+                    value={project.maximum}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    prefix={"₦"}
+                  />
+                  , use the stepper buttons to increase/decrease amount.
+                </FormHelperText>
+              </FormControl>
+
+              <FormControl isRequired>
+                <FormLabel>Payment Method</FormLabel>
+                <Select
+                  borderColor="green.400"
+                  border="2px"
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  value={paymentMethod}
+                >
+                  <option value="checkout">Checkout</option>
+                  <option value="coupon">Credit Code</option>
+                </Select>
+              </FormControl>
+            </Stack>
+
             {/* <MainInput
               type="number"
               isRequired
@@ -675,23 +693,26 @@ export default function Account(props) {
             <SimpleGrid
               columns={{ base: 1, md: 2 }}
               alignItems="flex-end"
-              maxW="600px"
+              maxW="700px"
               spacing="20px"
             >
-              <MainInput
-                type="text"
-                label={
-                  <Text>
-                    Have a credit code? (or{" "}
-                    <Link color="green.500" href="/pages/vendors">
-                      Buy now
-                    </Link>
-                    )
-                  </Text>
-                }
-                value={coupon}
-                onChange={(e) => setCoupon(e.target.value)}
-              />
+              {paymentMethod === "coupon" && (
+                <MainInput
+                  type="text"
+                  label={
+                    <Text>
+                      Have a credit code? (or{" "}
+                      <Link color="green.500" href="/pages/vendors">
+                        Buy now
+                      </Link>
+                      )
+                    </Text>
+                  }
+                  value={coupon}
+                  onChange={(e) => setCoupon(e.target.value)}
+                  isRequired
+                />
+              )}
               <MainButton
                 title="Invest"
                 onClick={MakePayment}
