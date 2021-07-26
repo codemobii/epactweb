@@ -676,7 +676,7 @@ export default function Account(props) {
                   onChange={(e) => setPaymentMethod(e.target.value)}
                   value={paymentMethod}
                 >
-                  <option value="checkout">Checkout</option>
+                  <option value="checkout">Make online payment</option>
                   <option value="coupon">Credit Code</option>
                 </Select>
               </FormControl>
